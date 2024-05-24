@@ -39,6 +39,8 @@ Thumbs.db
 *.pro.user*
 CMakeLists.txt.user*
 
+#MacOS QtCreator generated files
+[Bb]uild
 # xemacs temporary files
 *.flc
 
