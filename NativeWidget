@@ -1,5 +1,5 @@
-#ifndef OSGQOPENGLWIDGET_H
-#define OSGQOPENGLWIDGET_H
+#ifndef NATIVEWIDGET_H
+#define NATIVEWIDGET_H
 
 #ifdef __APPLE__
 #   define __glext_h_
@@ -29,8 +29,7 @@ namespace osgViewer
     class Viewer;
 }
 
-    class OSGQOPENGL_EXPORT NativeWidget : public QOpenGLWidget,
-    protected QOpenGLFunctions
+class OSGQOPENGL_EXPORT NativeWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
     Q_OBJECT
 

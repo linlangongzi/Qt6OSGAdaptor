@@ -1,5 +1,5 @@
-#ifndef OSGQOPENGLWINDOW_H
-#define OSGQOPENGLWINDOW_H
+#ifndef NATIVEWINDOW_H
+#define NATIVEWINDOW_H
 
 #ifdef __APPLE__
 #   define __glext_h_
@@ -28,8 +28,7 @@ namespace osgViewer
     class Viewer;
 }
 
-class OSGQOPENGL_EXPORT NativeWindow : public QOpenGLWindow,
-    protected QOpenGLFunctions
+class OSGQOPENGL_EXPORT NativeWindow : public QOpenGLWindow, protected QOpenGLFunctions
 {
     Q_OBJECT
 
@@ -87,4 +86,4 @@ protected:
     void createRenderer();
 };
 
-#endif // OSGQOPENGLWINDOW_H
+#endif // NATIVEWINDOW_H

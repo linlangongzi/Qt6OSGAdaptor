@@ -1,32 +1,31 @@
 TEMPLATE = lib
 CONFIG += c++17 dll
 
-DEFINES += BUILD_include
+DEFINES += BUILD_INCLUDE
 
 # Include paths
-INCLUDEPATH += \
+INCLUDEPATH += $$PWD
 
 # Source and header files
 
 HEADERS += \
-    CullVisitorEx \
-    Export \
-    GraphicsWindowEx \
-    NativeWidget \
-    NativeWindow \
-    ViewAdaptor \
-    RenderStageEx \
-    StateEx
-
+    $$PWD/CullVisitorEx \
+    $$PWD/Export \
+    $$PWD/GraphicsWindowEx \
+    $$PWD/NativeWidget \
+    $$PWD/NativeWindow \
+    $$PWD/ViewAdaptor \
+    $$PWD/RenderStageEx \
+    $$PWD/StateEx
 
 SOURCES += \
-    CullVisitorEx.cpp \
-    GraphicsWindowEx.cpp \
-    NativeWidget.cpp \
-    NativeWindow.cpp \
-    RenderStageEx.cpp \
-    StateEx.cpp \
-    ViewAdaptor.cpp
+    $$PWD/CullVisitorEx.cpp \
+    $$PWD/GraphicsWindowEx.cpp \
+    $$PWD/NativeWidget.cpp \
+    $$PWD/NativeWindow.cpp \
+    $$PWD/RenderStageEx.cpp \
+    $$PWD/StateEx.cpp \
+    $$PWD/ViewAdaptor.cpp
 
 # Define the output directory
 DESTDIR = ../lib
