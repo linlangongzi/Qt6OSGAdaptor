@@ -33,6 +33,12 @@ OpenThreads::ReadWriteMutex* osgQOpenGLWindow::mutex()
     return &_osgMutex;
 }
 
+void osgQOpenGLWindow::handleUpdateRequest()
+{
+    _osgWantsToRenderFrame = true;
+    update();
+}
+
 
 void osgQOpenGLWindow::initializeGL()
 {
@@ -121,6 +127,10 @@ void osgQOpenGLWindow::createRenderer()
     setDefaultDisplaySettings();
 
     m_renderer = new OSGRenderer(this);
+    if (m_renderer)
+    {
+        connect(m_renderer, &OSGRenderer::updateRequested, this, &osgQOpenGLWindow::handleUpdateRequest);
+    }
     double pixelRatio = screen()->devicePixelRatio();
     m_renderer->setupOSG(width(), height(), pixelRatio);
 }

@@ -22,7 +22,6 @@ osgQOpenGLWidget::osgQOpenGLWidget(osg::ArgumentParser* arguments,
     QOpenGLWidget(parent),
     _arguments(arguments)
 {
-
 }
 
 osgQOpenGLWidget::~osgQOpenGLWidget()
@@ -37,6 +36,12 @@ osgViewer::Viewer* osgQOpenGLWidget::getOsgViewer()
 OpenThreads::ReadWriteMutex* osgQOpenGLWidget::mutex()
 {
     return &_osgMutex;
+}
+
+void osgQOpenGLWidget::handleUpdateRequest()
+{
+    _osgWantsToRenderFrame = true;
+    update();
 }
 
 
@@ -216,6 +221,10 @@ void osgQOpenGLWidget::createRenderer()
 	} else {
 		m_renderer = new OSGRenderer(_arguments, this);
 	}
+    if (m_renderer)
+    {
+        connect(m_renderer, &OSGRenderer::updateRequested, this, &osgQOpenGLWidget::handleUpdateRequest);
+    }
 	QScreen* screen = windowHandle()
                       && windowHandle()->screen() ? windowHandle()->screen() :
                       qApp->screens().front();

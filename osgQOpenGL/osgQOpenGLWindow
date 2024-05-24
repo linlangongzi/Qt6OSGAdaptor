@@ -35,7 +35,7 @@ class OSGQOPENGL_EXPORT osgQOpenGLWindow : public QOpenGLWindow,
 
 protected:
     OSGRenderer* m_renderer {nullptr};
-    bool _osgWantsToRenderFrame{true};
+    bool _osgWantsToRenderFrame{false};
     OpenThreads::ReadWriteMutex _osgMutex;
 	bool _isFirstFrame {true};
     friend class OSGRenderer;
@@ -56,6 +56,9 @@ public:
     {
         return _widget;
     }
+
+public slots:
+    void handleUpdateRequest();
 
 signals:
     void initialized();

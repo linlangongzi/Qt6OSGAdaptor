@@ -1,39 +1,15 @@
-// Copyright (C) 2017 Mike Krus
-//
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 2 of the
-// License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
-
 #include <osgQOpenGL/OSGRenderer>
-
-#include <osgQOpenGL/osgQOpenGLWindow>
-#include <osgQOpenGL/osgQOpenGLWidget>
-
-//#include <osgQOpenGL/CullVisitorEx>
-//#include <osgQOpenGL/GraphicsWindowEx>
 
 #include <QApplication>
 #include <QScreen>
+#include <QKeyEvent>
+#include <QMouseEvent>
+#include <QWheelEvent>
+#include <QThread>
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLVertexArrayObject>
-
-#include <QKeyEvent>
-#include <QMouseEvent>
-#include <QWheelEvent>
-
-#include <QThread>
 
 namespace
 {
@@ -114,30 +90,17 @@ namespace
     };
 
     static QtKeyboardMap s_QtKeyboardMap;
-} // namespace
+}
+// namespace
 
 OSGRenderer::OSGRenderer(QObject* parent)
     : QObject(parent), osgViewer::Viewer()
 {
-    //    QObject::connect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit,
-    //                     [this]()
-    //    {
-    //        _applicationAboutToQuit = true;
-    //        killTimer(_timerId);
-    //        _timerId = 0;
-    //    });
 }
 
 OSGRenderer::OSGRenderer(osg::ArgumentParser* arguments, QObject* parent)
     : QObject(parent), osgViewer::Viewer(*arguments)
 {
-    //    QObject::connect(QCoreApplication::instance(), &QCoreApplication::aboutToQuit,
-    //                     [this]()
-    //    {
-    //        _applicationAboutToQuit = true;
-    //        killTimer(_timerId);
-    //        _timerId = 0;
-    //    });
 }
 
 OSGRenderer::~OSGRenderer()
@@ -146,20 +109,7 @@ OSGRenderer::~OSGRenderer()
 
 void OSGRenderer::update()
 {
-    osgQOpenGLWindow* osgWidgetRendered = dynamic_cast<osgQOpenGLWindow*>(parent());
-
-    if(osgWidgetRendered != nullptr)
-    {
-        osgWidgetRendered->_osgWantsToRenderFrame = true;
-        osgWidgetRendered->update();
-    }
-
-    else
-    {
-        osgQOpenGLWidget* osgWidget = dynamic_cast<osgQOpenGLWidget*>(parent());
-        osgWidget->_osgWantsToRenderFrame = true;
-        osgWidget->update();
-    }
+    emit updateRequested();
 }
 
 void OSGRenderer::resize(int windowWidth, int windowHeight, float windowScale)
@@ -189,7 +139,6 @@ void OSGRenderer::setupOSG(int windowWidth, int windowHeight, float windowScale)
     m_windowScale = windowScale;
     m_osgWinEmb = new osgViewer::GraphicsWindowEmbedded(0, 0,
                                                         windowWidth * windowScale, windowHeight * windowScale);
-    //m_osgWinEmb = new osgViewer::GraphicsWindowEmbedded(0, 0, windowWidth * windowScale, windowHeight * windowScale);
     // make sure the event queue has the correct window rectangle size and input range
     m_osgWinEmb->getEventQueue()->syncWindowRectangleWithGraphicsContext();
     _camera->setViewport(new osg::Viewport(0, 0, windowWidth * windowScale,

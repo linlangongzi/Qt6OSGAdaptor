@@ -36,11 +36,10 @@ class OSGQOPENGL_EXPORT osgQOpenGLWidget : public QOpenGLWidget,
 
 protected:
     OSGRenderer* m_renderer {nullptr};
-    bool _osgWantsToRenderFrame{true};
+    bool _osgWantsToRenderFrame{false};
     OpenThreads::ReadWriteMutex _osgMutex;
     osg::ArgumentParser* _arguments {nullptr};
 	bool _isFirstFrame {true};
-
     friend class OSGRenderer;
 
 public:
@@ -57,6 +56,9 @@ public:
     //! override this to change default size or aspect ratio 
     QSize sizeHint() const override { return QSize(640,480); }
     
+public slots:
+    void handleUpdateRequest();
+
 signals:
     void initialized();
 
