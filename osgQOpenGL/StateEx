@@ -1,0 +1,28 @@
+#ifndef STATEEX_H
+#define STATEEX_H
+
+#include <osgQOpenGL/Export>
+
+#include <osg/State>
+
+/// Needed for mixing osg rendering with Qt 2D drawing using QPainter...
+/// See http://forum.openscenegraph.org/viewtopic.php?t=15627&view=previous
+
+class OSGQOPENGL_EXPORT StateEx : public osg::State
+{
+public:
+    StateEx() : defaultFBO(0) {}
+    inline void setDefaultFBO(GLuint fbo)
+    {
+        defaultFBO = fbo;
+    }
+    inline GLuint getDefaultFBO() const
+    {
+        return defaultFBO;
+    }
+
+protected:
+    GLuint defaultFBO;
+};
+
+#endif // STATEEX_H
