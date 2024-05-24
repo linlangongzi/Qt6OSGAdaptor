@@ -72,3 +72,8 @@ CMakeLists.txt.user*
 *.dll
 *.exe
 
+*.vs/
+
+CMakePresets.json
+CMakeUserPresets.json
+[Oo]ut/

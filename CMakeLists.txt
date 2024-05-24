@@ -24,20 +24,23 @@ endif()
 
 # Include paths
 include_directories(
-    include/osgQOpenGL
+    ${CMAKE_CURRENT_SOURCE_DIR}/
+    ${CMAKE_CURRENT_SOURCE_DIR}/osgQOpenGL
+    C:/vcpkg/installed/x64-windows/include
 )
 
 # Source and header files
 set(HEADERS
-    include/osgQOpenGL/CullVisitorEx.h
-    include/osgQOpenGL/Export.h
-    include/osgQOpenGL/GraphicsWindowEx.h
-    include/osgQOpenGL/OSGRenderer.h
-    include/osgQOpenGL/RenderStageEx.h
-    include/osgQOpenGL/StateEx.h
-    include/osgQOpenGL/osgQOpenGLWidget.h
-    include/osgQOpenGL/osgQOpenGLWindow.h
+    osgQOpenGL/CullVisitorEx
+    osgQOpenGL/DefineExport.h
+    osgQOpenGL/GraphicsWindowEx
+    osgQOpenGL/OSGRenderer
+    osgQOpenGL/RenderStageEx
+    osgQOpenGL/StateEx
+    osgQOpenGL/osgQOpenGLWidget
+    osgQOpenGL/osgQOpenGLWindow
 )
+
 
 set(SOURCES
     CullVisitorEx.cpp
@@ -53,6 +56,11 @@ set(SOURCES
 find_package(OpenSceneGraph REQUIRED COMPONENTS osgDB osgGA osgUtil osgViewer osgWidget)
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets OpenGL OpenGLWidgets)
 
+# Library search paths
+link_directories(
+    C:/vcpkg/installed/x64-windows/lib
+
+)
 # Platform-specific settings
 if(APPLE)
     # Specify the architecture for macOS (e.g., arm64 for M1/M2)
@@ -66,27 +74,46 @@ endif()
 # Create the library
 add_library(${LIB_NAME} SHARED ${SOURCES} ${HEADERS})
 
-# Link against OpenSceneGraph, Qt, and platform-specific libraries
-target_link_libraries(${LIB_NAME}
-    osg
-    osgUtil
-    osgViewer
-    osgGA
-    osgDB
-    OpenThreads
-    Qt6::Widgets
-    Qt6::OpenGL
-    Qt6::OpenGLWidgets
-    ${OpenGL_LIBRARY}
-    ${COCOA_LIBRARY}
-)
-
 # Set properties for Qt6 automatic tools
 set_target_properties(${LIB_NAME} PROPERTIES
     AUTOMOC ON
     AUTOUIC ON
     AUTORCC ON
 )
+
+# Link against OpenSceneGraph, Qt, and platform-specific libraries
+if(WIN32)
+    target_link_libraries(${LIB_NAME}
+        osg
+        osgUtil
+        osgViewer
+        osgGA
+        osgDB
+        OpenThreads
+        Qt6::Core
+        Qt6::Gui
+        Qt6::Widgets
+        Qt6::OpenGL
+        Qt6::OpenGLWidgets
+        opengl32
+    )
+elseif(APPLE)
+    target_link_libraries(${LIB_NAME}
+        osg
+        osgUtil
+        osgViewer
+        osgGA
+        osgDB
+        OpenThreads
+        Qt6::Core
+        Qt6::Gui
+        Qt6::Widgets
+        Qt6::OpenGL
+        Qt6::OpenGLWidgets
+        ${OpenGL_LIBRARY}
+        ${COCOA_LIBRARY}
+    )
+endif()
 
 # Handle vcpkg integration
 if(DEFINED ENV{VCPKG_ROOT})
