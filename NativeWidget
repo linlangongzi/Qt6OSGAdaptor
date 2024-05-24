@@ -8,7 +8,7 @@
 #   include <QtGui/qopenglext.h>
 #endif
 
-#include <osgQOpenGL/Export>
+#include <Export>
 #include <OpenThreads/ReadWriteMutex>
 
 #ifdef WIN32
@@ -22,30 +22,30 @@
 #include <QOpenGLFunctions>
 #include <QReadWriteLock>
 
-class OSGRenderer;
+class ViewAdaptor;
 
 namespace osgViewer
 {
     class Viewer;
 }
 
-class OSGQOPENGL_EXPORT osgQOpenGLWidget : public QOpenGLWidget,
+    class OSGQOPENGL_EXPORT NativeWidget : public QOpenGLWidget,
     protected QOpenGLFunctions
 {
     Q_OBJECT
 
 protected:
-    OSGRenderer* m_renderer {nullptr};
+    ViewAdaptor* viewAdaptor {nullptr};
     bool _osgWantsToRenderFrame{false};
     OpenThreads::ReadWriteMutex _osgMutex;
     osg::ArgumentParser* _arguments {nullptr};
 	bool _isFirstFrame {true};
-    friend class OSGRenderer;
+    friend class ViewAdaptor;
 
 public:
-    osgQOpenGLWidget(QWidget* parent = nullptr);
-    osgQOpenGLWidget(osg::ArgumentParser* arguments, QWidget* parent = nullptr);
-    virtual ~osgQOpenGLWidget();
+    NativeWidget(QWidget* parent = nullptr);
+    NativeWidget(osg::ArgumentParser* arguments, QWidget* parent = nullptr);
+    virtual ~NativeWidget();
 
     /** Get osgViewer View */
     virtual osgViewer::Viewer* getOsgViewer();

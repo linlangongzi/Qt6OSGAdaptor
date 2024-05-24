@@ -1,4 +1,4 @@
-#include <osgQOpenGL/OSGRenderer>
+#include <ViewAdaptor>
 
 #include <QApplication>
 #include <QScreen>
@@ -93,26 +93,26 @@ namespace
 }
 // namespace
 
-OSGRenderer::OSGRenderer(QObject* parent)
+ViewAdaptor::ViewAdaptor(QObject* parent)
     : QObject(parent), osgViewer::Viewer()
 {
 }
 
-OSGRenderer::OSGRenderer(osg::ArgumentParser* arguments, QObject* parent)
+ViewAdaptor::ViewAdaptor(osg::ArgumentParser* arguments, QObject* parent)
     : QObject(parent), osgViewer::Viewer(*arguments)
 {
 }
 
-OSGRenderer::~OSGRenderer()
+ViewAdaptor::~ViewAdaptor()
 {
 }
 
-void OSGRenderer::update()
+void ViewAdaptor::update()
 {
     emit updateRequested();
 }
 
-void OSGRenderer::resize(int windowWidth, int windowHeight, float windowScale)
+void ViewAdaptor::resize(int windowWidth, int windowHeight, float windowScale)
 {
     if(!m_osgInitialized)
         return;
@@ -133,7 +133,7 @@ void OSGRenderer::resize(int windowWidth, int windowHeight, float windowScale)
 }
 
 
-void OSGRenderer::setupOSG(int windowWidth, int windowHeight, float windowScale)
+void ViewAdaptor::setupOSG(int windowWidth, int windowHeight, float windowScale)
 {
     m_osgInitialized = true;
     m_windowScale = windowScale;
@@ -159,7 +159,7 @@ void OSGRenderer::setupOSG(int windowWidth, int windowHeight, float windowScale)
     _lastFrameStartTime.setStartTick(0);
 }
 
-void OSGRenderer::setKeyboardModifiers(QInputEvent* event)
+void ViewAdaptor::setKeyboardModifiers(QInputEvent* event)
 {
     unsigned int modkey = event->modifiers() & (Qt::ShiftModifier |
                                                 Qt::ControlModifier |
@@ -175,14 +175,14 @@ void OSGRenderer::setKeyboardModifiers(QInputEvent* event)
     m_osgWinEmb->getEventQueue()->getCurrentEventState()->setModKeyMask(mask);
 }
 
-void OSGRenderer::keyPressEvent(QKeyEvent* event)
+void ViewAdaptor::keyPressEvent(QKeyEvent* event)
 {
     setKeyboardModifiers(event);
     int value = s_QtKeyboardMap.remapKey(event);
     m_osgWinEmb->getEventQueue()->keyPress(value);
 }
 
-void OSGRenderer::keyReleaseEvent(QKeyEvent* event)
+void ViewAdaptor::keyReleaseEvent(QKeyEvent* event)
 {
     if(event->isAutoRepeat())
     {
@@ -196,7 +196,7 @@ void OSGRenderer::keyReleaseEvent(QKeyEvent* event)
     }
 }
 
-void OSGRenderer::mousePressEvent(QMouseEvent* event)
+void ViewAdaptor::mousePressEvent(QMouseEvent* event)
 {
     int button = 0;
 
@@ -228,7 +228,7 @@ void OSGRenderer::mousePressEvent(QMouseEvent* event)
                                                    event->y() * m_windowScale, button);
 }
 
-void OSGRenderer::mouseReleaseEvent(QMouseEvent* event)
+void ViewAdaptor::mouseReleaseEvent(QMouseEvent* event)
 {
     int button = 0;
 
@@ -260,7 +260,7 @@ void OSGRenderer::mouseReleaseEvent(QMouseEvent* event)
                                                      event->y() * m_windowScale, button);
 }
 
-void OSGRenderer::mouseDoubleClickEvent(QMouseEvent* event)
+void ViewAdaptor::mouseDoubleClickEvent(QMouseEvent* event)
 {
     int button = 0;
 
@@ -292,14 +292,14 @@ void OSGRenderer::mouseDoubleClickEvent(QMouseEvent* event)
                                                          event->y() * m_windowScale, button);
 }
 
-void OSGRenderer::mouseMoveEvent(QMouseEvent* event)
+void ViewAdaptor::mouseMoveEvent(QMouseEvent* event)
 {
     setKeyboardModifiers(event);
     m_osgWinEmb->getEventQueue()->mouseMotion(event->x() * m_windowScale,
                                               event->y() * m_windowScale);
 }
 
-void OSGRenderer::wheelEvent(QWheelEvent* event)
+void ViewAdaptor::wheelEvent(QWheelEvent* event)
 {
     setKeyboardModifiers(event);
 
@@ -328,7 +328,7 @@ void OSGRenderer::wheelEvent(QWheelEvent* event)
 }
 
 
-bool OSGRenderer::checkEvents()
+bool ViewAdaptor::checkEvents()
 {
     // check events from any attached sources
     for(Devices::iterator eitr = _eventSources.begin();
@@ -360,7 +360,7 @@ bool OSGRenderer::checkEvents()
     return false;
 }
 
-bool OSGRenderer::checkNeedToDoFrame()
+bool ViewAdaptor::checkNeedToDoFrame()
 {
     // check if any event handler has prompted a redraw
     if(_requestRedraw)
@@ -402,7 +402,7 @@ bool OSGRenderer::checkNeedToDoFrame()
 }
 
 // called from ViewerWidget paintGL() method
-void OSGRenderer::frame(double simulationTime)
+void ViewAdaptor::frame(double simulationTime)
 {
     // limit the frame rate
     if(getRunMaxFrameRate() > 0.0)
@@ -456,12 +456,12 @@ void OSGRenderer::frame(double simulationTime)
 #endif
 }
 
-void OSGRenderer::requestRedraw()
+void ViewAdaptor::requestRedraw()
 {
     osgViewer::Viewer::requestRedraw();
 }
 
-void OSGRenderer::timerEvent(QTimerEvent* /*event*/)
+void ViewAdaptor::timerEvent(QTimerEvent* /*event*/)
 {
     // application is about to quit, just return
     if(_applicationAboutToQuit)

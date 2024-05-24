@@ -1,23 +1,8 @@
-// Copyright (C) 2017 Mike Krus
-//
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License as
-// published by the Free Software Foundation; either version 2 of the
-// License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful, but
-// WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with this program; if not, write to the Free Software
-// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#ifndef OSGRENDERER_H
-#define OSGRENDERER_H
+#ifndef VIEWADAPTOR_H
+#define VIEWADAPTOR_H
 
-#include <osgQOpenGL/Export>
+#include <Export>
 
 #include <QObject>
 
@@ -32,7 +17,7 @@ namespace eveBIM
     class ViewerWidget;
 }
 
-class OSGQOPENGL_EXPORT OSGRenderer : public QObject, public osgViewer::Viewer
+class OSGQOPENGL_EXPORT ViewAdaptor : public QObject, public osgViewer::Viewer
 {
     bool                                       m_osgInitialized {false};
     osg::ref_ptr<osgViewer::GraphicsWindow>    m_osgWinEmb;
@@ -50,10 +35,10 @@ class OSGQOPENGL_EXPORT OSGRenderer : public QObject, public osgViewer::Viewer
 
 public:
 
-    explicit OSGRenderer(QObject* parent = nullptr);
-    explicit OSGRenderer(osg::ArgumentParser* arguments, QObject* parent = nullptr);
+    explicit ViewAdaptor(QObject* parent = nullptr);
+    explicit ViewAdaptor(osg::ArgumentParser* arguments, QObject* parent = nullptr);
 
-    ~OSGRenderer() override;
+    ~ViewAdaptor() override;
 
     bool continuousUpdate() const
     {
@@ -97,4 +82,4 @@ protected:
 
 };
 
-#endif // OSGRENDERER_H
+#endif // VIEWADAPTOR_H

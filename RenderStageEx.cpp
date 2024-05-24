@@ -1,5 +1,5 @@
-#include <osgQOpenGL/RenderStageEx>
-#include <osgQOpenGL/StateEx>
+#include <RenderStageEx>
+#include <StateEx>
 
 void RenderStageEx::drawInner(osg::RenderInfo& renderInfo,
                               osgUtil::RenderLeaf*& previous, bool& doCopyTexture)

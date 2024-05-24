@@ -1,32 +1,32 @@
 TEMPLATE = lib
 CONFIG += c++17 dll
 
-DEFINES += BUILD_OSGQOPENGL
+DEFINES += BUILD_include
 
 # Include paths
-INCLUDEPATH += include/osgQOpenGL
+INCLUDEPATH += \
 
 # Source and header files
 
 HEADERS += \
-    osgQOpenGL/CullVisitorEx \
-    osgQOpenGL/Export \
-    osgQOpenGL/GraphicsWindowEx \
-    osgQOpenGL/OSGRenderer \
-    osgQOpenGL/RenderStageEx \
-    osgQOpenGL/StateEx \
-    osgQOpenGL/osgQOpenGLWidget \
-    osgQOpenGL/osgQOpenGLWindow
+    CullVisitorEx \
+    Export \
+    GraphicsWindowEx \
+    NativeWidget \
+    NativeWindow \
+    ViewAdaptor \
+    RenderStageEx \
+    StateEx
 
 
 SOURCES += \
     CullVisitorEx.cpp \
     GraphicsWindowEx.cpp \
-    OSGRenderer.cpp \
+    NativeWidget.cpp \
+    NativeWindow.cpp \
     RenderStageEx.cpp \
     StateEx.cpp \
-    osgQOpenGLWidget.cpp \
-    osgQOpenGLWindow.cpp
+    ViewAdaptor.cpp
 
 # Define the output directory
 DESTDIR = ../lib

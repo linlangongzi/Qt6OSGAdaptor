@@ -1,5 +1,5 @@
-#include <osgQOpenGL/osgQOpenGLWidget>
-#include <osgQOpenGL/OSGRenderer>
+#include <NativeWidget>
+#include <ViewAdaptor>
 
 #include <osgViewer/Viewer>
 #include <osg/GL>
@@ -12,40 +12,40 @@
 #include <QScreen>
 #include <QWindow>
 
-osgQOpenGLWidget::osgQOpenGLWidget(QWidget* parent)
+NativeWidget::NativeWidget(QWidget* parent)
     : QOpenGLWidget(parent)
 {
 }
 
-osgQOpenGLWidget::osgQOpenGLWidget(osg::ArgumentParser* arguments,
+NativeWidget::NativeWidget(osg::ArgumentParser* arguments,
                                    QWidget* parent) :
     QOpenGLWidget(parent),
     _arguments(arguments)
 {
 }
 
-osgQOpenGLWidget::~osgQOpenGLWidget()
+NativeWidget::~NativeWidget()
 {
 }
 
-osgViewer::Viewer* osgQOpenGLWidget::getOsgViewer()
+osgViewer::Viewer* NativeWidget::getOsgViewer()
 {
-    return m_renderer;
+    return viewAdaptor;
 }
 
-OpenThreads::ReadWriteMutex* osgQOpenGLWidget::mutex()
+OpenThreads::ReadWriteMutex* NativeWidget::mutex()
 {
     return &_osgMutex;
 }
 
-void osgQOpenGLWidget::handleUpdateRequest()
+void NativeWidget::handleUpdateRequest()
 {
     _osgWantsToRenderFrame = true;
     update();
 }
 
 
-void osgQOpenGLWidget::initializeGL()
+void NativeWidget::initializeGL()
 {
     // Initializes OpenGL function resolution for the current context.
     initializeOpenGLFunctions();
@@ -53,28 +53,28 @@ void osgQOpenGLWidget::initializeGL()
     emit initialized();
 }
 
-void osgQOpenGLWidget::resizeGL(int w, int h)
+void NativeWidget::resizeGL(int w, int h)
 {
-    Q_ASSERT(m_renderer);
+    Q_ASSERT(viewAdaptor);
     QScreen* screen = windowHandle()
                       && windowHandle()->screen() ? windowHandle()->screen() :
                       qApp->screens().front();
-    m_renderer->resize(w, h, screen->devicePixelRatio());
+    viewAdaptor->resize(w, h, screen->devicePixelRatio());
 }
 
-void osgQOpenGLWidget::paintGL()
+void NativeWidget::paintGL()
 {
     OpenThreads::ScopedReadLock locker(_osgMutex);
 	if (_isFirstFrame) {
 		_isFirstFrame = false;
-		m_renderer->getCamera()->getGraphicsContext()->setDefaultFboId(defaultFramebufferObject());
+        viewAdaptor->getCamera()->getGraphicsContext()->setDefaultFboId(defaultFramebufferObject());
 	}
-	m_renderer->frame();
+    viewAdaptor->frame();
 }
 
-void osgQOpenGLWidget::keyPressEvent(QKeyEvent* event)
+void NativeWidget::keyPressEvent(QKeyEvent* event)
 {
-    Q_ASSERT(m_renderer);
+    Q_ASSERT(viewAdaptor);
 
     if(event->key() == Qt::Key_F)
     {
@@ -159,74 +159,74 @@ void osgQOpenGLWidget::keyPressEvent(QKeyEvent* event)
     else // not 'F' key
     {
         // forward event to renderer
-        m_renderer->keyPressEvent(event);
+        viewAdaptor->keyPressEvent(event);
     }
 }
 
-void osgQOpenGLWidget::keyReleaseEvent(QKeyEvent* event)
+void NativeWidget::keyReleaseEvent(QKeyEvent* event)
 {
-    Q_ASSERT(m_renderer);
+    Q_ASSERT(viewAdaptor);
     // forward event to renderer
-    m_renderer->keyReleaseEvent(event);
+    viewAdaptor->keyReleaseEvent(event);
 }
 
-void osgQOpenGLWidget::mousePressEvent(QMouseEvent* event)
+void NativeWidget::mousePressEvent(QMouseEvent* event)
 {
-    Q_ASSERT(m_renderer);
+    Q_ASSERT(viewAdaptor);
     // forward event to renderer
-    m_renderer->mousePressEvent(event);
+    viewAdaptor->mousePressEvent(event);
 }
 
-void osgQOpenGLWidget::mouseReleaseEvent(QMouseEvent* event)
+void NativeWidget::mouseReleaseEvent(QMouseEvent* event)
 {
-    Q_ASSERT(m_renderer);
+    Q_ASSERT(viewAdaptor);
     // forward event to renderer
-    m_renderer->mouseReleaseEvent(event);
+    viewAdaptor->mouseReleaseEvent(event);
 }
 
-void osgQOpenGLWidget::mouseDoubleClickEvent(QMouseEvent* event)
+void NativeWidget::mouseDoubleClickEvent(QMouseEvent* event)
 {
-    Q_ASSERT(m_renderer);
+    Q_ASSERT(viewAdaptor);
     // forward event to renderer
-    m_renderer->mouseDoubleClickEvent(event);
+    viewAdaptor->mouseDoubleClickEvent(event);
 }
 
-void osgQOpenGLWidget::mouseMoveEvent(QMouseEvent* event)
+void NativeWidget::mouseMoveEvent(QMouseEvent* event)
 {
-    Q_ASSERT(m_renderer);
+    Q_ASSERT(viewAdaptor);
     // forward event to renderer
-    m_renderer->mouseMoveEvent(event);
+    viewAdaptor->mouseMoveEvent(event);
 }
 
-void osgQOpenGLWidget::wheelEvent(QWheelEvent* event)
+void NativeWidget::wheelEvent(QWheelEvent* event)
 {
-    Q_ASSERT(m_renderer);
+    Q_ASSERT(viewAdaptor);
     // forward event to renderer
-    m_renderer->wheelEvent(event);
+    viewAdaptor->wheelEvent(event);
 }
 
-void osgQOpenGLWidget::setDefaultDisplaySettings()
+void NativeWidget::setDefaultDisplaySettings()
 {
     osg::DisplaySettings* ds = osg::DisplaySettings::instance().get();
     ds->setNvOptimusEnablement(1);
     ds->setStereo(false);
 }
 
-void osgQOpenGLWidget::createRenderer()
+void NativeWidget::createRenderer()
 {
     // call this before creating a View...
     setDefaultDisplaySettings();
 	if (!_arguments) {
-		m_renderer = new OSGRenderer(this);
+        viewAdaptor = new ViewAdaptor(this);
 	} else {
-		m_renderer = new OSGRenderer(_arguments, this);
+        viewAdaptor = new ViewAdaptor(_arguments, this);
 	}
-    if (m_renderer)
+    if (viewAdaptor)
     {
-        connect(m_renderer, &OSGRenderer::updateRequested, this, &osgQOpenGLWidget::handleUpdateRequest);
+        connect(viewAdaptor, &ViewAdaptor::updateRequested, this, &NativeWidget::handleUpdateRequest);
     }
 	QScreen* screen = windowHandle()
                       && windowHandle()->screen() ? windowHandle()->screen() :
                       qApp->screens().front();
-    m_renderer->setupOSG(width(), height(), screen->devicePixelRatio());
+    viewAdaptor->setupOSG(width(), height(), screen->devicePixelRatio());
 }
